@@ -11,6 +11,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 type Recipe struct {
@@ -62,8 +64,13 @@ type apiConfig struct {
 }
 
 func main() {
+	// Get env variables
+	godotenv.Load()
+	port := os.Getenv("YANITSKIBOX_PORT")
+	dataFile := os.Getenv("YANITSKIBOX_RECIPE_FILE")
+
     // open and unmarshal recipe json
-    recipeDataBytes, err := os.ReadFile("./content/recipes.json")
+    recipeDataBytes, err := os.ReadFile(fmt.Sprintf("./content/%s", dataFile))
     if err != nil {
         panic(err)
     }
@@ -84,7 +91,7 @@ func main() {
     mux := http.NewServeMux()
 
 	// File Server
-    fs := http.FileServer(http.Dir("./public"))
+    fs := http.FileServer(http.Dir("./dist"))
     mux.Handle("GET /", allowCreate(fs))
 
 	// API
@@ -94,7 +101,6 @@ func main() {
     mux.HandleFunc("PUT /api/recipes/{recipe}", apiCfg.editRecipeHandler)
     mux.Handle("DELETE /api/recipes/{recipe}", http.HandlerFunc(apiCfg.deleteRecipeHandler))
 
-    port := "8081"
     server := http.Server{
         Addr: ":"+port,
         Handler: mux,
@@ -270,15 +276,15 @@ func (cfg apiConfig) resetHTML() error {
         return err
     }
 
-    err = clearDir("./public")
-    if err != nil {
-        return err
-    }
+    //err = clearDir("./public")
+    //if err != nil {
+    //    return err
+    //}
 
-    err = cfg.writeHTML()
-    if err != nil {
-        return err
-    }
+    //err = cfg.writeHTML()
+    //if err != nil {
+    //    return err
+    //}
 
     return nil
 }
@@ -329,17 +335,21 @@ func (cfg *apiConfig) createRecipeHandler(w http.ResponseWriter, r *http.Request
         return
     }
 
-    fmt.Println("Created new recipe:", *newRecipe)
+    log.Println("Created new recipe:", *newRecipe)
 
     respondWithJSON(w, http.StatusCreated, newRecipe)
 }
 
 func (cfg apiConfig) writeRecipes() error {
+	// Get env variables
+	godotenv.Load()
+	dataFile := os.Getenv("YANITSKIBOX_RECIPE_FILE")
+
     recipeBytes, err := json.MarshalIndent(cfg.recipes, "", "    ")
     if err != nil {
         return err
     }
-    err = os.WriteFile("./content/recipes.json", recipeBytes, 0644)
+    err = os.WriteFile(fmt.Sprintf("./content/%s", dataFile), recipeBytes, 0644)
     if err != nil {
         return err
     }
@@ -393,7 +403,7 @@ func (cfg *apiConfig) deleteRecipeHandler(w http.ResponseWriter, r *http.Request
         return
     }
 
-    fmt.Println("Removed recipe:", found.Name)
+    log.Println("Removed recipe:", found.Name)
 
     respondWithJSON(w, http.StatusOK, found)
 }
@@ -447,7 +457,7 @@ func (cfg *apiConfig) editRecipeHandler(w http.ResponseWriter, r *http.Request) 
         return
     }
 
-    fmt.Println("Updated recipe:", *newRecipe)
+    log.Println("Updated recipe:", *newRecipe)
 
     respondWithJSON(w, http.StatusCreated, newRecipe)
 }
