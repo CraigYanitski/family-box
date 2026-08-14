@@ -91,8 +91,8 @@ func main() {
     mux := http.NewServeMux()
 
 	// File Server
-    fs := http.FileServer(http.Dir("./dist"))
-    mux.Handle("GET /", allowCreate(fs))
+    //fs := http.FileServer(http.Dir("./dist"))
+    mux.Handle("GET /", allowCreate(spaHandler("./dist")))
 
 	// API
 	mux.HandleFunc("GET /api/recipes", apiCfg.getRecipeHandler)
@@ -289,6 +289,40 @@ func (cfg apiConfig) resetHTML() error {
     return nil
 }
 
+func (cfg apiConfig) writeRecipes() error {
+	// Get env variables
+	godotenv.Load()
+	dataFile := os.Getenv("YANITSKIBOX_RECIPE_FILE")
+
+    recipeBytes, err := json.MarshalIndent(cfg.recipes, "", "    ")
+    if err != nil {
+        return err
+    }
+    err = os.WriteFile(fmt.Sprintf("./content/%s", dataFile), recipeBytes, 0644)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+func spaHandler(staticDir string) http.HandlerFunc {
+    fs := http.FileServer(http.Dir(staticDir))
+	return func(w http.ResponseWriter, r *http.Request) {
+		// check if path exists for fileserver
+		path := filepath.Join(staticDir, filepath.Clean(r.URL.Path))
+		info, err := os.Stat(path)
+		if ((err == nil) && !(info.IsDir())) {
+			//http.ServeFile(w, r, path)
+			fs.ServeHTTP(w, r)
+			return
+		}
+
+		// else return index
+		path = filepath.Join(staticDir, "index.html")
+		http.ServeFile(w, r, path)
+	}
+}
+
 func (cfg *apiConfig) createRecipeHandler(w http.ResponseWriter, r *http.Request) {
     decoder := json.NewDecoder(r.Body)
     newRecipe := &Recipe{}
@@ -338,22 +372,6 @@ func (cfg *apiConfig) createRecipeHandler(w http.ResponseWriter, r *http.Request
     log.Println("Created new recipe:", *newRecipe)
 
     respondWithJSON(w, http.StatusCreated, newRecipe)
-}
-
-func (cfg apiConfig) writeRecipes() error {
-	// Get env variables
-	godotenv.Load()
-	dataFile := os.Getenv("YANITSKIBOX_RECIPE_FILE")
-
-    recipeBytes, err := json.MarshalIndent(cfg.recipes, "", "    ")
-    if err != nil {
-        return err
-    }
-    err = os.WriteFile(fmt.Sprintf("./content/%s", dataFile), recipeBytes, 0644)
-    if err != nil {
-        return err
-    }
-    return nil
 }
 
 func (cfg *apiConfig) getRecipeHandler(w http.ResponseWriter, r *http.Request) {
