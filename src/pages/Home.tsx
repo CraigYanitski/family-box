@@ -1,0 +1,33 @@
+import { Link } from 'react-router-dom'
+import { services } from '../config/services'
+
+export default function Home() {
+  return (
+    <div>
+      <p className="section-label">Services</p>
+      <div className="service-grid">
+        {services.map((service) => {
+          const card = (
+            <>
+              <h3 className="service-card__name">{service.name}</h3>
+              <p className="service-card__desc">{service.description}</p>
+              {service.status === 'coming-soon' && (
+                <span className="service-card__badge">Coming soon</span>
+              )}
+            </>
+          )
+
+          return service.status === 'available' ? (
+            <Link key={service.id} to={service.path} className="service-card">
+              {card}
+            </Link>
+          ) : (
+            <div key={service.id} className="service-card service-card--disabled">
+              {card}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

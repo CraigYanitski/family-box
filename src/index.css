@@ -1,0 +1,627 @@
+:root {
+  /* Color tokens — recipe-box / index-card palette */
+  --color-paper: #f3f0e6;
+  --color-paper-raised: #fbf9f2;
+  --color-ink: #26241f;
+  --color-ink-soft: #55503f;
+  --color-forest: #33473b;
+  --color-forest-dark: #22302a;
+  --color-mustard: #c79a3e;
+  --color-clay: #a8462f;
+  --color-line: #dcd5c2;
+
+  /* Type tokens */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* Visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-forest);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Nav ---------- */
+
+.site-nav {
+  display: flex;
+  gap: 24px;
+}
+
+.site-nav__link {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--color-ink-soft);
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav__link:hover {
+  color: var(--color-ink);
+}
+
+.site-nav__link--active {
+  color: var(--color-forest-dark);
+  border-bottom-color: var(--color-mustard);
+}
+
+/* ---------- Services ---------- */
+
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  margin-left: 8px;
+  color: var(--color-ink-soft);
+}
+
+.status-dot__mark {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-line);
+}
+
+.status-dot--online .status-dot__mark {
+  background: var(--color-forest);
+}
+
+.status-dot--offline .status-dot__mark {
+  background: var(--color-clay);
+}
+
+.status-dot--checking .status-dot__mark {
+  background: var(--color-mustard);
+}
+
+/* ---------- Splash page service cards ---------- */
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.service-card {
+  display: block;
+  background: var(--color-paper-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  padding: 20px 18px;
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(38, 36, 31, 0.1);
+}
+
+.service-card--disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.service-card--disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.service-card__name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.service-card__desc {
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+  margin: 0;
+}
+
+.service-card__badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-mustard);
+}
+
+/* ---------- Generic section page header ---------- */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* ---------- Layout shell ---------- */
+
+.site-header {
+  border-bottom: 1px solid var(--color-line);
+  background: var(--color-paper-raised);
+}
+
+.site-header__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.site-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  color: var(--color-forest-dark);
+}
+
+.site-title__mark {
+  color: var(--color-mustard);
+}
+
+.site-main {
+  flex: 1;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn--primary {
+  background: var(--color-forest);
+  color: var(--color-paper-raised);
+}
+.btn--primary:hover {
+  background: var(--color-forest-dark);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+.btn--ghost:hover {
+  border-color: var(--color-ink-soft);
+}
+
+.btn--danger {
+  background: transparent;
+  border-color: var(--color-clay);
+  color: var(--color-clay);
+}
+.btn--danger:hover {
+  background: var(--color-clay);
+  color: var(--color-paper-raised);
+}
+
+/* ---------- Recipe grid + index card ---------- */
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.recipe-card {
+  position: relative;
+  display: block;
+  background: var(--color-paper-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  padding: 20px 18px 18px;
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(38, 36, 31, 0.1);
+}
+
+.recipe-card__tab {
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  width: 28px;
+  height: 18px;
+  background: var(--color-mustard);
+  color: var(--color-forest-dark);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+}
+
+.recipe-card__name {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 8px 0 6px;
+}
+
+.recipe-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-ink-soft);
+}
+
+.badge-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* ---------- Detail view ---------- */
+
+.recipe-detail__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-line);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.recipe-detail__title {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.recipe-detail__actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.recipe-detail__columns {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+}
+
+@media (max-width: 640px) {
+  .recipe-detail__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-mustard);
+  margin: 0 0 12px;
+}
+
+/* Ingredients */
+.ingredient-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ingredient-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ingredient-line--step {
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--color-line);
+  font-size: 0.95rem;
+}
+
+.ingredient-line--title {
+  margin-top: 24px;
+  padding-bottom: 6px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  /*letter-spacing: 0.08em;*/
+  text-transform: capitalize;
+  color: var(--color-forest);
+  border-bottom: 1px solid var(--color-line);
+  margin: 24px 0 4px;
+}
+
+.ingredient-line--note {
+    font-size: 0.88rem;
+    font-style: italic;
+    color: var(--color-ink-soft);
+    background: var(--color-paper);
+    border-left: 3px solid var(--color-line);
+    padding: 8px 12px;
+}
+
+/* Instructions */
+.instruction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.instruction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step;
+  /*counter-increment: step;
+  position: relative;
+  align-items: center;
+  padding-left: 40px;*/
+  display: flex;
+  gap: 12px;
+}
+
+/*.instruction-list li::before {
+  content: counter(step);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  /position: absolute;
+  left: 0;
+  top: 0;/
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  line-height: 1;
+  border: 1px solid var(--color-forest);
+  color: var(--color-forest);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}*/
+
+.instruction-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.instruction-line--step {
+    counter-increment: step;
+}
+
+.instruction-line--step::before {
+  content: counter(step);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  line-height: 1;
+  border: 1px solid var(--color-forest);
+  color: var(--color-forest);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.instruction-line--title {
+    margin-top: 24px;
+    padding-bottom: 6px;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    /*letter-spacing: 0.08em;*/
+    text-transform: capitalize;
+    color: var(--color-forest);
+    border-bottom: 1px solid var(--color-line);
+}
+
+.instruction-line--note {
+    font-size: 0.88rem;
+    font-style: italic;
+    color: var(--color-ink-soft);
+    background: var(--color-paper);
+    border-left: 3px solid var(--color-line);
+    padding: 8px 12px;
+}
+
+/* ---------- Form ---------- */
+
+.recipe-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 640px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+.field input[type='text'],
+.field input[type='number'],
+.field textarea {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 10px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-paper-raised);
+  color: var(--color-ink);
+}
+
+.list-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list-editor__row {
+  display: flex;
+  gap: 8px;
+}
+
+.list-editor__row input,
+.list-editor__row textarea {
+  flex: 1;
+}
+
+.step-editor-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.step-editor-row__type {
+  flex: 0, 0, 110px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 10px 8px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: var(--color-paper-raised);
+  color: var(--color-ink);
+}
+
+.step-editor-row textarea {
+  flex: 1;
+}
+
+.icon-btn {
+  border: 1px solid var(--color-line);
+  background: var(--color-paper-raised);
+  border-radius: 4px;
+  width: 38px;
+  cursor: pointer;
+  color: var(--color-ink-soft);
+}
+.icon-btn:hover {
+  border-color: var(--color-clay);
+  color: var(--color-clay);
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-line);
+}
+
+/* ---------- Status states ---------- */
+
+.state-message {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+  padding: 40px 0;
+  text-align: center;
+}
+
+.state-message--error {
+  color: var(--color-clay);
+}
