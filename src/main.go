@@ -83,13 +83,18 @@ func main() {
 
     mux := http.NewServeMux()
 
+	// File Server
     fs := http.FileServer(http.Dir("./public"))
     mux.Handle("GET /", allowCreate(fs))
-    mux.HandleFunc("POST /create", apiCfg.createRecipeHandler)
-    mux.HandleFunc("POST /edit/{recipe}", apiCfg.editRecipeHandler)
-    mux.Handle("POST /delete/{recipe}", http.HandlerFunc(apiCfg.deleteRecipeHandler))
 
-    port := "8080"
+	// API
+	mux.HandleFunc("GET /api/recipes", apiCfg.getRecipeHandler)
+    mux.HandleFunc("POST /api/recipes", apiCfg.createRecipeHandler)
+    mux.HandleFunc("GET /api/recipes/{recipe}", apiCfg.getRecipeHandler)
+    mux.HandleFunc("PUT /api/recipes/{recipe}", apiCfg.editRecipeHandler)
+    mux.Handle("DELETE /api/recipes/{recipe}", http.HandlerFunc(apiCfg.deleteRecipeHandler))
+
+    port := "8081"
     server := http.Server{
         Addr: ":"+port,
         Handler: mux,
@@ -339,6 +344,26 @@ func (cfg apiConfig) writeRecipes() error {
         return err
     }
     return nil
+}
+
+func (cfg *apiConfig) getRecipeHandler(w http.ResponseWriter, r *http.Request) {
+	recipeName := r.PathValue("recipe")
+
+	if recipeName == "" {
+		respondWithJSON(w, http.StatusOK, cfg.recipes.Recipes)
+	} else {
+		found := cfg.recipes.find(recipeName)
+		if found == nil {
+			respondWithError(
+				w,
+				http.StatusNotFound,
+				fmt.Sprintf("recipe %s not found", recipeName),
+				nil,
+			)
+        	return
+		}
+		respondWithJSON(w, http.StatusOK, found)
+	}
 }
 
 func (cfg *apiConfig) deleteRecipeHandler(w http.ResponseWriter, r *http.Request) {
