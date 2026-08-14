@@ -11,6 +11,6 @@ react-refactor
 old-ssg
 package-lock*
 tsconfig.*tsbuildinfo
-vite.config.d
+vite.config.d*
 vite.config.js
 
