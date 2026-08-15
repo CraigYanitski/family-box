@@ -4,6 +4,7 @@ import RecipeList from './components/RecipeList'
 import RecipeDetail from './components/RecipeDetail'
 import RecipeForm from './components/RecipeForm'
 import Home from './pages/Home'
+import Media from './pages/Media'
 
 export default function App() {
   return (
@@ -14,6 +15,8 @@ export default function App() {
         <Route path="/recipes/new" element={<RecipeForm mode="create" />} />
         <Route path="/recipes/:name" element={<RecipeDetail />} />
         <Route path="/recipes/:name/edit" element={<RecipeForm mode="edit" />} />
+        <Route path="/media/images" element={<Media />} />
+        <Route path="/media/videos" element={<Media />} />
       </Route>
     </Routes>
   )

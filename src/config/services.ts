@@ -15,6 +15,22 @@ export const services: Service[] = [
     path: '/recipes',
     status: 'available',
   },
+  {
+    id: 'media',
+    name: 'Photo Box',
+    description: 'Browse and view images on home workstation.',
+    path: 'media/images',
+    status: 'coming-soon',
+    healthCheckPath: "/api/media/healthz",
+  },
+  {
+    id: 'media',
+    name: 'Video Box',
+    description: 'Browse and view video on home workstation.',
+    path: 'media/videos',
+    status: 'coming-soon',
+    healthCheckPath: "/api/media/healthz",
+  },
   // Add future services here, e.g.:
   // { id: 'chores', name: 'Chore Tracker', description: '...', path: '/chores', status: 'coming-soon' },
 ]
