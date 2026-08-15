@@ -1,5 +1,6 @@
-import { Link, NavLink, Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import { services } from '../config/services'
+import ServiceNavLink from './ServiceNavLink'
 
 export default function Layout() {
   return (
@@ -13,15 +14,7 @@ export default function Layout() {
             {services
               .filter((s) => s.status === "available")
               .map((s) => (
-                <NavLink
-                  key={s.id}
-                  to={s.path}
-                  className={
-                    ({ isActive }) => `site-nav__link${isActive ? ' site-nav__link--active' : ''}`
-                  }
-                >
-                  {s.name}
-                </NavLink>
+                <ServiceNavLink key={s.id} service={s} />
               ))}
           </nav>
         </div>
