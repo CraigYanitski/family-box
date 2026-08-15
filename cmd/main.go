@@ -68,6 +68,7 @@ func main() {
 	godotenv.Load()
 	port := os.Getenv("YANITSKIBOX_PORT")
 	dataFile := os.Getenv("YANITSKIBOX_RECIPE_FILE")
+	mediaPort := os.Getenv("YANITSKIBOX_MEDIA_PORT")
 
     // open and unmarshal recipe json
     recipeDataBytes, err := os.ReadFile(fmt.Sprintf("./content/%s", dataFile))
@@ -94,12 +95,15 @@ func main() {
     //fs := http.FileServer(http.Dir("./dist"))
     mux.Handle("GET /", allowCreate(spaHandler("./dist")))
 
-	// API
+	// recipes API
 	mux.HandleFunc("GET /api/recipes", apiCfg.getRecipeHandler)
     mux.HandleFunc("POST /api/recipes", apiCfg.createRecipeHandler)
     mux.HandleFunc("GET /api/recipes/{recipe}", apiCfg.getRecipeHandler)
     mux.HandleFunc("PUT /api/recipes/{recipe}", apiCfg.editRecipeHandler)
     mux.Handle("DELETE /api/recipes/{recipe}", http.HandlerFunc(apiCfg.deleteRecipeHandler))
+
+	// media API
+	mux.HandleFunc("GET /api/media/healthz", checkHealth(mediaPort))
 
     server := http.Server{
         Addr: ":"+port,
@@ -108,6 +112,21 @@ func main() {
 
     log.Printf("Serving recipes on port %s\n", port)
     log.Fatal(server.ListenAndServe())
+}
+
+func checkHealth(endpoint string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		res, err := http.Get("http://" + filepath.Join(endpoint, "healthz"))
+		if err != nil {
+			respondWithError(w, http.StatusServiceUnavailable, fmt.Sprintf("Service not available at %s", endpoint), err)
+			return
+		}
+		if res.StatusCode >= 299 {
+			respondWithError(w, http.StatusServiceUnavailable, fmt.Sprintf("Received status %d - %s from endpoint %s", res.StatusCode, res.Status, endpoint), nil)
+			return
+		}
+		respondWithJSON(w, http.StatusOK, nil)
+	}
 }
 
 func allowCreate(next http.Handler) http.Handler {
