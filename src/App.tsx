@@ -5,6 +5,7 @@ import RecipeDetail from './components/RecipeDetail'
 import RecipeForm from './components/RecipeForm'
 import Home from './pages/Home'
 import Media from './pages/Media'
+import NotFound from './pages/NotFound'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/recipes/:name/edit" element={<RecipeForm mode="edit" />} />
         <Route path="/media/images" element={<Media />} />
         <Route path="/media/videos" element={<Media />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )
