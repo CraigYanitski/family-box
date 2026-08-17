@@ -3,6 +3,20 @@ import { useServiceHealth } from '../hooks/useServiceHealth'
 import { listFiles } from '../api/files'
 import type { FtpFile } from '../types/file'
 
+function parseFiles(html: string) : FtpFile[] {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const anchorTags = doc.querySelectorAll('a');
+
+  const filteredItems = Array.from(anchorTags)
+    .map((a) => {
+      const href = a.getAttribute("href") || '';
+      const name = a.textContent?.trim() || '';
+      return { name, size: 0, isDir: href.endsWith('/'), modifiedAt: "" };
+    })
+  return filteredItems
+}
+
 export default function Media() {
   const health = useServiceHealth('/api/media/healthz')
   const [files, setFiles] = useState<FtpFile[]>([])
@@ -18,9 +32,12 @@ export default function Media() {
     setLoading(true)
     setError(null)
 
-    listFiles('/')
+    listFiles('api/images')
       .then((data) => {
-        if (!cancelled) setFiles(data)
+        if (!cancelled) {
+            const links = parseFiles(data);
+            setFiles(links);
+        }
       })
       .catch((err: unknown) => {
         if (!cancelled) setError(err instanceof Error ? err.message : 'Failed to load files')
