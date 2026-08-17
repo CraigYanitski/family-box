@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { encodeRecipe, recipesApi } from '../api/recipes'
 import type { Recipe } from '../types/recipe'
 import { parseStep } from '../utils/stepParsing.ts'
+import NotFound from '../pages/NotFound.tsx'
 
 export default function RecipeDetail() {
   const { name = '' } = useParams<{ name: string }>()
@@ -53,8 +54,8 @@ export default function RecipeDetail() {
   }
 
   if (loading) return <p className="state-message">Loading recipe…</p>
-  if (error) return <p className="state-message state-message--error">{error}</p>
-  if (!recipe) return null
+  if (error) return <NotFound />//<p className="state-message state-message--error">{error}</p>
+  if (!recipe) return <NotFound />//null
 
   return (
     <article>
