@@ -20,7 +20,7 @@ export const services: Service[] = [
     name: 'Photo Box',
     description: 'Browse and view images on home workstation.',
     path: 'media/images',
-    status: 'coming-soon',
+    status: 'available',
     healthCheckPath: "/api/media/healthz",
   },
   {
@@ -28,7 +28,7 @@ export const services: Service[] = [
     name: 'Video Box',
     description: 'Browse and view video on home workstation.',
     path: 'media/videos',
-    status: 'coming-soon',
+    status: 'available',
     healthCheckPath: "/api/media/healthz",
   },
   // Add future services here, e.g.:
