@@ -16,8 +16,8 @@ export default function App() {
         <Route path="/recipes/new" element={<RecipeForm mode="create" />} />
         <Route path="/recipes/:name" element={<RecipeDetail />} />
         <Route path="/recipes/:name/edit" element={<RecipeForm mode="edit" />} />
-        <Route path="/media/images" element={<Media />} />
-        <Route path="/media/videos" element={<Media />} />
+        <Route path="/media/images/*" element={<Media />} />
+        <Route path="/media/videos/*" element={<Media />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
