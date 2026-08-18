@@ -4,7 +4,7 @@ export type HealthStatus = 'checking' | 'online' | 'offline'
 
 const POLL_INTERVAL_MS = 30_000
 
-export function useServiceHealth(healthCheckPath?: string): HealthStatus {
+export function useServiceHealth(healthCheckPath?: string, repeat?: boolean): HealthStatus {
   const [status, setStatus] = useState<HealthStatus>('checking')
 
   useEffect(() => {
@@ -28,9 +28,14 @@ export function useServiceHealth(healthCheckPath?: string): HealthStatus {
 
     check()
     const interval = setInterval(check, POLL_INTERVAL_MS)
+    if (!repeat) {
+        clearInterval(interval)
+    }
     return () => {
       cancelled = true
-      clearInterval(interval)
+      if (repeat) {
+        clearInterval(interval)
+      }
     }
   }, [healthCheckPath])
 

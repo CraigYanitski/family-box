@@ -13,7 +13,7 @@ export default function Home() {
               <div className="service-card__header">
                 <h3 className="service-card__name">{service.name}</h3>
                 {service.healthCheckPath && (
-                    <ServiceStatus healthCheckPath={service.healthCheckPath} />
+                    <ServiceStatus healthCheckPath={service.healthCheckPath} repeat={true} />
                 )}
               </div>
               <p className="service-card__desc">{service.description}</p>
