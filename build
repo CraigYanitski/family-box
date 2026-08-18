@@ -1,0 +1,7 @@
+#!/bin/sh
+
+git pull
+npm run build
+echo "Frontend generated successfully"
+go build -o yanitskibox ./cmd
+echo "server binary built successfully"
