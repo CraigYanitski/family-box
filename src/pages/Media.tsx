@@ -2,41 +2,88 @@ import { useEffect, useState } from 'react'
 import { useServiceHealth } from '../hooks/useServiceHealth'
 import { listFiles } from '../api/files'
 import type { FtpFile } from '../types/file'
+import { Link, useLocation } from 'react-router-dom';
 
-function parseFiles(html: string) : FtpFile[] {
+interface Directory {
+    dirs: FtpFile[],
+    files: FtpFile[],
+}
+
+function parseFiles(html: string) : Directory {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   const anchorTags = doc.querySelectorAll('a');
 
-  const filteredItems = Array.from(anchorTags)
+  const dirs = Array.from(anchorTags)
     .map((a) => {
       const href = a.getAttribute("href") || '';
       const name = a.textContent?.trim() || '';
       return { name, size: 0, isDir: href.endsWith('/'), modifiedAt: "" };
     })
-  return filteredItems
+    .filter((item): item is FtpFile =>
+      item.isDir
+    );
+  const files = Array.from(anchorTags)
+    .map((a) => {
+      const href = a.getAttribute("href") || '';
+      const name = a.textContent?.trim() || '';
+      return { name, size: 0, isDir: href.endsWith('/'), modifiedAt: "" };
+    })
+    .filter((item): item is FtpFile =>
+      !item.isDir
+    );
+  return { dirs, files }
 }
 
+function formatDirectory(files: FtpFile[]) {
+  return (
+    <div className="service-grid">
+      {files.map((file, id) => {
+        const card = (
+          <>
+            <div className="service-card__header">
+              <h3 className="service-card__name">{file.isDir ? file.name.slice(0, -1) : file.name}</h3>
+              <p>{file.size / 1024} KB</p>
+            </div>
+          </>
+        )
+        return <Link key={id} to={file.name} className="service-card" >
+          {card}
+        </Link>
+      })}
+    </div>
+  )
+}
+
+//interface Props {
+//    type: string
+//}
+
 export default function Media() {
-  const health = useServiceHealth('/api/media/healthz')
+  const health = useServiceHealth('/api/media/healthz', false)
   const [files, setFiles] = useState<FtpFile[]>([])
+  const [dirs, setDirs] = useState<FtpFile[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  const location = useLocation();
+  const currentPath = location.pathname.slice("/media/".length);
+
   useEffect(() => {
-    // Don't bother hitting the listing endpoint if we already know the
-    // workstation is offline — avoids a slow, doomed request.
     if (health !== 'online') return
 
     let cancelled = false
     setLoading(true)
     setError(null)
 
-    listFiles('api/images')
+    console.log(currentPath)
+
+    listFiles(`api/${currentPath}`)
       .then((data) => {
         if (!cancelled) {
-            const links = parseFiles(data);
-            setFiles(links);
+            const dir = parseFiles(data);
+            setDirs(dir.dirs);
+            setFiles(dir.files);
         }
       })
       .catch((err: unknown) => {
@@ -49,7 +96,7 @@ export default function Media() {
     return () => {
       cancelled = true
     }
-  }, [health])
+  }, [health, currentPath])
 
   if (health === 'checking') {
     return <p className="state-message">Checking file server…</p>
@@ -68,15 +115,10 @@ export default function Media() {
 
   return (
     <div>
+      <p className="section-label">Directories</p>
+      {formatDirectory(dirs)}
       <p className="section-label">Files</p>
-      <ul className="file-list">
-        {files.map((file) => (
-          <li key={file.name} className="file-list__row">
-            <span className="file-list__name">{file.isDir ? '📁' : '📄'} {file.name}</span>
-            {!file.isDir && <span className="file-list__size">{Math.round(file.size / 1024)} KB</span>}
-          </li>
-        ))}
-      </ul>
+      {formatDirectory(files)}
     </div>
   )
 }
