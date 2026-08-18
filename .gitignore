@@ -4,6 +4,7 @@ go.sum
 .env
 content
 recipes
+yanitskibox
 recipe-app
 cook-icon.png
 favicon.zip
