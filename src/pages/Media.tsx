@@ -1,50 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useServiceHealth } from '../hooks/useServiceHealth'
-import { listFiles } from '../api/files'
+import { listFiles, sortPathFiles } from '../api/files'
 import type { FtpFile } from '../types/file'
 import { Link, useLocation } from 'react-router-dom';
 import Image from '../components/Image';
 import Video from '../components/Video';
+import { formatFilesize } from '../utils/fileSize';
 
-interface Directory {
-    dirs: FtpFile[],
-    files: FtpFile[],
-}
-
-function parseFiles(path: string, html: string) : Directory {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const anchorTags = doc.querySelectorAll('a');
-
-  const dirs = Array.from(anchorTags)
-    .map((a) => {
-      const href = a.getAttribute("href") || '';
-      const name = a.textContent?.trim() || '';
-      return { name, size: 0, isDir: href.endsWith('/'), modifiedAt: "" };
-    })
-    .filter((item): item is FtpFile =>
-      item.isDir
-    );
-  const files = Array.from(anchorTags)
-    .map((a) => {
-      const href = a.getAttribute("href") || '';
-      const name = a.textContent?.trim() || '';
-      return { name, size: 0, isDir: href.endsWith('/'), modifiedAt: "" };
-    })
-    .filter((item): item is FtpFile => {
-      let mediaFile: boolean = false;
-      if (path.startsWith("images")) {
-        mediaFile = isImage(item.name);
-      }
-      if (path.startsWith("videos")) {
-        mediaFile = isVideo(item.name);
-      }
-      return !item.isDir && mediaFile
-    });
-  return { dirs, files }
-}
-
-function formatDirectory(files: FtpFile[], title: string) {
+function formatDirectory(files: FtpFile[], title: string, path: string) {
   if (files.length == 0) return
   return (
     <div>
@@ -54,12 +17,12 @@ function formatDirectory(files: FtpFile[], title: string) {
           const card = (
             <>
               <div className="service-card__header">
-                <h3 className="service-card__name">{file.isDir ? file.name.slice(0, -1) : file.name}</h3>
-                {!file.isDir && <p>{file.size / 1024} KB</p>}
+                <h3 className="service-card__name">{file.name}</h3>
+                {file.isDir ? <p>{file.children} items</p> : <p>{formatFilesize(file.size)} KB</p>}
               </div>
             </>
           )
-          return <Link key={id} to={file.name} className="service-card" >
+          return <Link key={id} to={`${path}/${file.name}`} className="service-card" >
             {card}
           </Link>
         })}
@@ -88,7 +51,6 @@ export default function Media() {
   const [error, setError] = useState<string | null>(null)
 
   const location = useLocation();
-  const currentPath = location.pathname.slice("/media/".length);
 
   useEffect(() => {
     if (health !== 'online') return
@@ -97,16 +59,20 @@ export default function Media() {
     setLoading(true)
     setError(null)
 
+    const currentPath = location.pathname.slice("/media/".length);
     console.log(currentPath)
 
-    listFiles(`api/${currentPath}`)
+    listFiles(decodeURIComponent(currentPath))
       .then((data) => {
         if (!cancelled) {
-          if (!isImage(currentPath) && !isVideo(currentPath)) {
-            const dir = parseFiles(currentPath, data);
-            setDirs(dir.dirs);
-            setFiles(dir.files);
-          }
+          const paths = sortPathFiles(data.paths)
+          setDirs(paths.dirs)
+          setFiles(paths.files)
+          //if (!isImage(currentPath) && !isVideo(currentPath)) {
+          //  const dir = parseFiles(currentPath, data);
+          //  setDirs(dir.dirs);
+          //  setFiles(dir.files);
+          //}
         }
       })
       .catch((err: unknown) => {
@@ -119,7 +85,7 @@ export default function Media() {
     return () => {
       cancelled = true
     }
-  }, [health, currentPath])
+  }, [health, location])
 
   if (health === 'checking') {
     return <p className="state-message">Checking file server…</p>
@@ -136,20 +102,21 @@ export default function Media() {
   if (loading) return <p className="state-message">Loading files…</p>
   if (error) return <p className="state-message state-message--error">{error}</p>
 
-  if (isImage(currentPath)) {
-    return <Image path={currentPath} />
+  if (isImage(location.pathname)) {
+    return <Image path={location.pathname.slice("/media/".length)} />
   }
 
-  if (isVideo(currentPath)) {
-    return <Video path={currentPath} />
+  if (isVideo(location.pathname)) {
+    return <Video path={location.pathname.slice("/media/".length)} />
   }
 
   if (!dirs.length && !files.length) return <p className="state-message" >There is nothing in this directory.</p>
 
   return (
     <div>
-      {formatDirectory(dirs, "Directories")}
-      {formatDirectory(files, "Files")}
+      {formatDirectory(dirs, "Directories", location.pathname)}
+      {formatDirectory(files, "Files", location.pathname)}
     </div>
   )
 }
+
