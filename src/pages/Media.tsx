@@ -6,23 +6,26 @@ import { Link, useLocation } from 'react-router-dom';
 import Image from '../components/Image';
 import Video from '../components/Video';
 import { formatFilesize } from '../utils/fileSize';
+import PageBody from '../components/PageBody';
 
-function formatDirectory(files: FtpFile[], title: string, path: string) {
-  if (files.length == 0) return
+function formatDirectory(files: FtpFile[], path: string, fileSection: boolean) {
+  if (files.length == 0) return;
+  const sectionTitle = fileSection ? "Files" : "Directories";
+  const sectionType = fileSection ? "file" : "directory";
   return (
     <div>
-      <p className="section-label">{title}</p>
-      <div className="service-grid">
+      <p className="section-label">{sectionTitle}</p>
+      <div className={`${sectionType}-grid`}>
         {files.map((file, id) => {
           const card = (
             <>
-              <div className="service-card__header">
-                <h3 className="service-card__name">{file.name}</h3>
-                {file.isDir ? <p>{file.children} items</p> : <p>{formatFilesize(file.size)} KB</p>}
+              <div className={`${sectionType}-card__header`}>
+                <h3 className={`${sectionType}-card__name`}>{file.name}</h3>
               </div>
+              <p className={`${sectionType}-card__desc`}>{file.isDir ? file.children + " items" : formatFilesize(file.size)}</p>
             </>
           )
-          return <Link key={id} to={`${path}/${file.name}`} className="service-card" >
+          return <Link key={id} to={`${path}/${file.name}`} className={`${sectionType}-card`} >
             {card}
           </Link>
         })}
@@ -114,8 +117,14 @@ export default function Media() {
 
   return (
     <div>
-      {formatDirectory(dirs, "Directories", location.pathname)}
-      {formatDirectory(files, "Files", location.pathname)}
+      <PageBody>
+        This is a connection to a media file server running on your workstation.
+        In order for your images and video to be seen here, place in the `Pictures` and `Videos` directories, respectively.
+        Just be warned that any files you put in these directories will be viewable to anybody on your network if the know of this website.
+        If you have any issues, just let me know.
+      </PageBody>
+      {formatDirectory(dirs, location.pathname, false)}
+      {formatDirectory(files, location.pathname, true)}
     </div>
   )
 }

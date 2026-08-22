@@ -92,38 +92,16 @@ textarea:focus-visible {
   border-bottom-color: var(--color-mustard);
 }
 
-/* ---------- Services ---------- */
+/*  Page body text  */
 
-.status-dot {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  margin-left: 8px;
+.page-intro {
+  font-size: 0.9rem;
   color: var(--color-ink-soft);
+  max-width: 60ch;
+  margin: 0 0 20px;
 }
 
-.status-dot__mark {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--color-line);
-}
-
-.status-dot--online .status-dot__mark {
-  background: var(--color-forest);
-}
-
-.status-dot--offline .status-dot__mark {
-  background: var(--color-clay);
-}
-
-.status-dot--checking .status-dot__mark {
-  background: var(--color-mustard);
-}
-
-/* ---------- Splash page service cards ---------- */
+/* ---------- Hame page service cards ---------- */
 
 .service-grid {
   display: grid;
@@ -171,6 +149,222 @@ textarea:focus-visible {
 }
 
 .service-card__badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-mustard);
+}
+
+/* ---------- Services ---------- */
+
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  margin-left: 8px;
+  color: var(--color-ink-soft);
+}
+
+.status-dot__mark {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-line);
+}
+
+.status-dot--online .status-dot__mark {
+  background: var(--color-forest);
+}
+
+.status-dot--offline .status-dot__mark {
+  background: var(--color-clay);
+}
+
+.status-dot--checking .status-dot__mark {
+  background: var(--color-mustard);
+}
+
+/* ---------- Layout page recipe cards ---------- */
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.recipe-card {
+  position: relative;
+  display: block;
+  background: var(--color-paper-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  padding: 20px 18px 18px;
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.recipe-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(38, 36, 31, 0.1);
+}
+
+.recipe-card__tab {
+  position: absolute;
+  top: -10px;
+  left: 18px;
+  width: 28px;
+  height: 18px;
+  background: var(--color-mustard);
+  color: var(--color-forest-dark);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+}
+
+.recipe-card__name {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 8px 0 6px;
+}
+
+.recipe-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-ink-soft);
+}
+
+.badge-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--color-paper);
+  border: 1px solid var(--color-line);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* ---------- Media page directory cards ---------- */
+
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.directory-card {
+  display: block;
+  background: var(--color-paper-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  padding: 20px 18px;
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.directory-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(38, 36, 31, 0.1);
+}
+
+.directory-card--disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.directory-card--disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.directory-card__name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.directory-card__desc {
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+  margin: 0;
+}
+
+.directory-card__badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-mustard);
+}
+
+/* ---------- Media page file cards ---------- */
+
+.file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.file-card {
+  display: block;
+  background: var(--color-paper-raised);
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  padding: 20px 18px;
+  text-decoration: none;
+  color: var(--color-ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.file-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(38, 36, 31, 0.1);
+}
+
+.file-card--disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.file-card--disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.file-card__name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.file-card__desc {
+  font-size: 0.9rem;
+  color: var(--color-ink-soft);
+  margin: 0;
+}
+
+.file-card__badge {
   display: inline-block;
   margin-top: 10px;
   font-family: var(--font-mono);
@@ -296,75 +490,6 @@ textarea:focus-visible {
 .btn--danger:hover {
   background: var(--color-clay);
   color: var(--color-paper-raised);
-}
-
-/* ---------- Recipe grid + index card ---------- */
-
-.recipe-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-  margin-top: 24px;
-}
-
-.recipe-card {
-  position: relative;
-  display: block;
-  background: var(--color-paper-raised);
-  border: 1px solid var(--color-line);
-  border-radius: 2px;
-  padding: 20px 18px 18px;
-  text-decoration: none;
-  color: var(--color-ink);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.recipe-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(38, 36, 31, 0.1);
-}
-
-.recipe-card__tab {
-  position: absolute;
-  top: -10px;
-  left: 18px;
-  width: 28px;
-  height: 18px;
-  background: var(--color-mustard);
-  color: var(--color-forest-dark);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 2px;
-}
-
-.recipe-card__name {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 8px 0 6px;
-}
-
-.recipe-card__meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--color-ink-soft);
-}
-
-.badge-time {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--color-paper);
-  border: 1px solid var(--color-line);
-  padding: 2px 8px;
-  border-radius: 999px;
 }
 
 /* ---------- Detail view ---------- */

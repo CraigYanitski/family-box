@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom'
 import { services } from '../config/services'
 import ServiceStatus from '../components/ServiceStatus'
+import PageBody from '../components/PageBody'
 
 export default function Home() {
   return (
     <div>
+      <PageBody>
+        This is a local website to add some convenient services for you to access via your web browser.
+        The recipe server is will remain available since it is hosted on your DNS blocker,
+        but the image and video servers are hosted on your workstation.
+        These have indicators to show if they are available.
+        If they are offline, just log into your workstation and the file server should start.
+      </PageBody>
       <p className="section-label">Services</p>
       <div className="service-grid">
         {services.map((service) => {
