@@ -1,10 +1,10 @@
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
-import RecipeList from './components/RecipeList'
 import RecipeDetail from './components/RecipeDetail'
 import RecipeForm from './components/RecipeForm'
 import Home from './pages/Home'
 import Media from './pages/Media'
+import Recipes from './pages/Recipes'
 import NotFound from './pages/NotFound'
 
 export default function App() {
@@ -12,7 +12,7 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/recipes" element={<RecipeList />} />
+        <Route path="/recipes" element={<Recipes />} />
         <Route path="/recipes/new" element={<RecipeForm mode="create" />} />
         <Route path="/recipes/:name" element={<RecipeDetail />} />
         <Route path="/recipes/:name/edit" element={<RecipeForm mode="edit" />} />
